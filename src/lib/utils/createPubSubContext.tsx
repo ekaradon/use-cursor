@@ -6,54 +6,27 @@
  * https://github.com/jherr/fast-react-context
  */
 
-import { ReactNode, useCallback, useRef, useSyncExternalStore } from 'react'
+import { ReactNode, useSyncExternalStore } from 'react'
 import { createStrictContext } from './createStrictContext'
+import { usePubSubStore } from './pubSubStore'
 import { Maybe } from './types'
 
 export function createPubSubContext<Store>(initialState: Store, name: string) {
-  type PartialStore = Partial<Store>
-  type Payload = PartialStore | ((previousValue: Store) => PartialStore)
+  type Payload = Partial<Store> | ((previousValue: Store) => Partial<Store>)
   type Dispatch = (payload: Payload) => void
 
-  function useStoreData(): {
-    get: () => Store
-    set: Dispatch
-    subscribe: (callback: () => void) => () => void
-  } {
-    const store = useRef(initialState)
-
-    const get = useCallback(() => store.current, [])
-
-    const subscribers = useRef(new Set<() => void>())
-
-    const set = useCallback((payload: Payload) => {
-      const value: PartialStore = typeof payload === 'function' ? payload(store.current) : payload
-      store.current = { ...store.current, ...value }
-      subscribers.current.forEach((callback) => callback())
-    }, [])
-
-    const subscribe = useCallback((callback: () => void) => {
-      subscribers.current.add(callback)
-      return () => subscribers.current.delete(callback)
-    }, [])
-
-    return {
-      get,
-      set,
-      subscribe,
-    }
-  }
-
-  type UseStoreDataReturnType = ReturnType<typeof useStoreData>
+  const useStoreData = usePubSubStore<Store>
 
   const [StoreContextProvider, useStoreContext] = createStrictContext<
-    Maybe<UseStoreDataReturnType>
+    Maybe<ReturnType<typeof useStoreData>>
   >({
     name,
   })
 
   function Provider({ children }: { children: ReactNode }) {
-    return <StoreContextProvider value={useStoreData()}>{children}</StoreContextProvider>
+    return (
+      <StoreContextProvider value={useStoreData(initialState)}>{children}</StoreContextProvider>
+    )
   }
 
   type Selector<SelectorOutput> = (store: Store) => SelectorOutput
