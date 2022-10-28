@@ -1,11 +1,12 @@
 import react from '@vitejs/plugin-react'
+import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
-import { resolve } from 'path'
+import eslint from 'vite-plugin-eslint'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), dts({ insertTypesEntry: true })],
+  plugins: [eslint(), react(), dts({ insertTypesEntry: true })],
   publicDir: 'public',
   resolve: {
     alias: [{ find: '@', replacement: resolve(__dirname, 'src', 'lib') }],
