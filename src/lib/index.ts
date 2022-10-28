@@ -1,5 +1,1 @@
-export function useCursorOnHover() {}
-
-export function CursorProvider() {
-  return null
-}
+export { CursorProvider, useCursorOnHover } from './core/cursor'
