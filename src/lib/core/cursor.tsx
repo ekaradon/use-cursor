@@ -24,7 +24,7 @@ function useInitialStyle(initialStyle: CSSProperties = {}) {
 
 function useStyles() {
   const ref = useRef<HTMLDivElement>(null)
-  const [{ styles }] = useStore()
+  const [styles] = useStore((state) => state.styles)
   const style: CSSProperties = Object.assign({}, defaultCursorStyles, ...styles)
 
   useEventListener('mousemove', (event) => {
