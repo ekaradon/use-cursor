@@ -9,9 +9,11 @@ const { Provider, useStore } = createPubSubContext<{ styles: CSSProperties[] }>(
 
 const defaultCursorStyles: CSSProperties = { position: 'absolute', pointerEvents: 'none' }
 
-function useInitialStyle(initialStyle: CSSProperties = {}) {
+function useStyles(initialStyle: CSSProperties = {}) {
+  const ref = useRef<HTMLDivElement>(null)
   const initialStyleRef = useRef(initialStyle)
-  const [, setListOfCSS] = useStore()
+  const [styles, setListOfCSS] = useStore((state) => state.styles)
+  const style: CSSProperties = Object.assign({}, defaultCursorStyles, ...styles)
 
   useEffect(() => {
     if (!initialStyleRef.current) {
@@ -20,12 +22,6 @@ function useInitialStyle(initialStyle: CSSProperties = {}) {
     setListOfCSS({ styles: [initialStyleRef.current] })
     return () => setListOfCSS({ styles: [] })
   }, [setListOfCSS])
-}
-
-function useStyles() {
-  const ref = useRef<HTMLDivElement>(null)
-  const [styles] = useStore((state) => state.styles)
-  const style: CSSProperties = Object.assign({}, defaultCursorStyles, ...styles)
 
   useEventListener('mousemove', (event) => {
     if (ref.current) {
@@ -38,9 +34,7 @@ function useStyles() {
 }
 
 const Cursor = memo(function Cursor({ initialStyle }: { initialStyle?: CSSProperties }) {
-  useInitialStyle(initialStyle)
-
-  return <div {...useStyles()} />
+  return <div {...useStyles(initialStyle)} />
 })
 
 type CursorProviderProps = {
