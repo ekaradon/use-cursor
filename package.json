@@ -1,16 +1,14 @@
 {
   "name": "use-cursor-on-hover",
   "private": false,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "reset-css": "^5.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/react": "^18.0.22",
     "@types/react-dom": "^18.0.7",
@@ -19,6 +17,7 @@
     "eslint-config-react-app": "^7.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "reset-css": "^5.0.1",
     "typescript": "^4.6.4",
     "vite": "^3.2.0",
     "vite-plugin-dts": "^1.6.6",
