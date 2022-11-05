@@ -98,7 +98,7 @@ Should be called for every component where you want to define a custom style on 
 
 `RefObject<T>` of the component on which you want to trigger the custom style of the cursor.
 
-#### Props
+#### Parameters
 
 | Options | Type          | Description                                                            |
 | ------- | ------------- | ---------------------------------------------------------------------- |
