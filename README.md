@@ -1,5 +1,21 @@
 # use-cursor-on-hover
 
+- [Introduction](#introduction)
+- [Installation](#installation)
+  - [Requirements](#requirements)
+  - [Node/npm](#nodenpm)
+  - [Deno](#deno)
+- [Basic usage](#basic-usage)
+- [API](#api)
+  - [CursorProvider](#cursorprovider)
+    - [Usage](#usage)
+    - [Returns](#returns)
+    - [Props](#props)
+  - [useCursorOnHover](#usecursoronhover)
+    - [Usage](#usage-1)
+    - [Returns](#returns-1)
+    - [Parameters](#parameters)
+
 ## Introduction
 
 This is still a really early concept in alpha. Nothing is yet definitive and you should NOT use this in production for now.
