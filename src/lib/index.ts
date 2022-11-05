@@ -1,1 +1,1 @@
-export { CursorProvider, useCursorOnHover } from './core/cursor'
+export { CursorProvider, useCursorOnHover, useHideSystemCursor } from './core/cursor'

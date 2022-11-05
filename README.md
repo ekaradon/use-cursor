@@ -15,6 +15,10 @@
     - [Usage](#usage-1)
     - [Returns](#returns-1)
     - [Parameters](#parameters)
+  - [useHideSystemCursor](#usehidesystemcursor)
+    - [Usage](#usage-2)
+    - [Returns](#returns-2)
+    - [Parameters](#parameters-1)
 
 ## Introduction
 
@@ -98,11 +102,11 @@ Should be called at the root level of your application.
 
 #### Props
 
-| Options      | Type          | Description                                                             |
-| ------------ | ------------- | ----------------------------------------------------------------------- |
-| children     | ReactNode     | Everything that would benefit from the custom cursor should be there id |
-| initialStyle | CSSProperties | An object defining the initial style of the cursor                      |
-| hideCursor   | boolean       | Define whether or not the default cursor should be hidden               |
+| Options             | Type          | Description                                                             |
+| ------------------- | ------------- | ----------------------------------------------------------------------- |
+| children            | ReactNode     | Everything that would benefit from the custom cursor should be there id |
+| initialStyle        | CSSProperties | An object defining the initial style of the cursor                      |
+| hideDefaultCursor   | boolean       | Define whether or not the default cursor should be hidden               |
 
 ### useCursorOnHover
 
@@ -110,12 +114,38 @@ Should be called at the root level of your application.
 
 Should be called for every component where you want to define a custom style on the cursor.
 
+```tsx
+useCursorOnHover({ color: 'red' }, [...CSSProperties])
+```
+When two arguments override the same property, the latter takes precedence.
+
 #### Returns
 
 `RefObject<T>` of the component on which you want to trigger the custom style of the cursor.
 
 #### Parameters
 
-| Options | Type          | Description                                                            |
-| ------- | ------------- | ---------------------------------------------------------------------- |
-| style   | CSSProperties | The override of the cursor style when hovering this specific component |
+| Options    | Type          | Description                                                            |
+| ---------- | ------------- | ---------------------------------------------------------------------- |
+| ...style   | CSSProperties | The override of the cursor style when hovering this specific component |
+
+
+### useHideSystemCursor
+
+#### Usage
+
+When you don't want to hide the default cursor on your whole app, you can specify `hideDefaultCursor` as `false` in the Provider and then use this hook for the specific components you want to have the default cursor hidden.
+
+```tsx
+useHideSystemCursor(targetRef)
+```
+
+#### Returns
+
+`void`, this hook returns nothing.
+
+#### Parameters
+
+| Options   | Type                   | Description                                                            |
+| --------- | ---------------------- | ---------------------------------------------------------------------- |
+| targetRef | RefObject<HTMLElement> | The override of the cursor style when hovering this specific component |

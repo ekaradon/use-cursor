@@ -1,6 +1,7 @@
 import { useEventListener } from '@/hooks/useEventListener'
+import { useHover } from '@/hooks/useHover'
 import { createPubSubContext } from '@/utils/createPubSubContext'
-import { CSSProperties, memo, ReactNode, useEffect, useRef } from 'react'
+import { CSSProperties, memo, ReactNode, RefObject, useEffect, useRef } from 'react'
 
 const { Provider, useStore } = createPubSubContext<{ styles: CSSProperties[] }>(
   { styles: [] },
@@ -33,28 +34,43 @@ function useStyles(initialStyle: CSSProperties = {}) {
   return { ref, style }
 }
 
+export function useHideSystemCursor<T extends HTMLElement>(hoverTarget?: RefObject<T>) {
+  const root = useRef(document.body)
+  const previousCursor = useRef(document.body.style.cursor)
+  const target = hoverTarget ?? root
+
+  useHover(
+    target,
+    () => (document.body.style.cursor = 'none'),
+    () => (document.body.style.cursor = previousCursor.current),
+  )
+
+  useEffect(() => {
+    // Used to enforce hidding the default cursor on page loading
+    if (root.current === document.body) {
+      document.body.dispatchEvent(
+        new MouseEvent('mouseenter', {
+          view: window,
+          bubbles: true,
+          cancelable: true,
+        }),
+      )
+    }
+  }, [])
+}
+
 const Cursor = memo(function Cursor({ initialStyle }: { initialStyle?: CSSProperties }) {
   return <div {...useStyles(initialStyle)} />
 })
 
 type CursorProviderProps = {
   children: ReactNode
-  hideCursor?: boolean
+  hideDefaultCursor?: boolean
   initialStyle?: CSSProperties
 }
 
-export function CursorProvider({ children, initialStyle, hideCursor = true }: CursorProviderProps) {
-  useEffect(() => {
-    if (!hideCursor) {
-      return
-    }
-    const previousCursor = document.body.style.cursor
-    document.body.style.cursor = 'none'
-
-    return () => {
-      document.body.style.cursor = previousCursor
-    }
-  }, [hideCursor])
+export function CursorProvider({ children, initialStyle, hideDefaultCursor }: CursorProviderProps) {
+  useHideSystemCursor()
 
   return (
     <Provider>
@@ -64,22 +80,18 @@ export function CursorProvider({ children, initialStyle, hideCursor = true }: Cu
   )
 }
 
-export function useCursorOnHover<T extends HTMLElement>(style: CSSProperties) {
-  const targetRef = useRef<T>(null)
-  const styleRef = useRef(style)
+export function useCursorOnHover<T extends HTMLElement>(
+  ...listOfStyles: [CSSProperties, ...CSSProperties[]]
+) {
+  const target = useRef<T>(null)
+  const styleRef = useRef(Object.assign(...listOfStyles))
   const [styles, setStyles] = useStore((state) => state.styles)
 
-  useEventListener(
-    'mouseenter',
+  useHover(
+    target,
     () => setStyles({ styles: [...styles, styleRef.current] }),
-    targetRef,
-  )
-
-  useEventListener(
-    'mouseleave',
     () => setStyles({ styles: styles.filter((style) => style !== styleRef.current) }),
-    targetRef,
   )
 
-  return targetRef
+  return target
 }
