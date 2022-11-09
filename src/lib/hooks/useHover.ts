@@ -6,6 +6,6 @@ export function useHover<T extends HTMLElement>(
   onEnter: () => void,
   onExit: () => void,
 ) {
-  useEventListener('mouseenter', onEnter, target)
-  useEventListener('mouseleave', onExit, target)
+  useEventListener('mouseover', onEnter, target)
+  useEventListener('mouseout', onExit, target)
 }
