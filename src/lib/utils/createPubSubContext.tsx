@@ -6,36 +6,30 @@
  * https://github.com/jherr/fast-react-context
  */
 
-import { ReactNode, useSyncExternalStore } from 'react'
+import { ReactNode, useCallback, useSyncExternalStore } from 'react'
 import { createStrictContext } from './createStrictContext'
-import { usePubSubStore } from './pubSubStore'
+import { createPubSubStore } from './pubSubStore'
 import { Maybe } from './types'
 
-export function createPubSubContext<Store>(initialState: Store, name: string) {
-  type Payload = Partial<Store> | ((previousValue: Store) => Partial<Store>)
-  type Dispatch = (payload: Payload) => void
+export function createPubSubContext<State>(initialState: State, name: string) {
+  type Payload<T> = T extends Function ? never : T | ((previousValue: T) => T)
+  type Dispatch<T = Partial<State>> = (payload: Payload<T>) => void
 
-  const useStoreData = usePubSubStore<Store>
+  const store = createPubSubStore<State>(initialState)
 
-  const [StoreContextProvider, useStoreContext] = createStrictContext<
-    Maybe<ReturnType<typeof useStoreData>>
-  >({
+  const [StoreContextProvider, useStoreContext] = createStrictContext<Maybe<typeof store>>({
     name,
   })
 
   function Provider({ children }: { children: ReactNode }) {
-    return (
-      <StoreContextProvider value={useStoreData(initialState)}>{children}</StoreContextProvider>
-    )
+    return <StoreContextProvider value={store}>{children}</StoreContextProvider>
   }
 
-  type Selector<SelectorOutput> = (store: Store) => SelectorOutput
+  type Selector<SelectorOutput> = (store: State) => SelectorOutput
 
-  function useStore(): [Store, Dispatch]
-  function useStore<SelectorOutput>(selector: Selector<SelectorOutput>): [SelectorOutput, Dispatch]
-  function useStore<SelectorOutput>(
-    selector?: Selector<SelectorOutput>,
-  ): [Store | SelectorOutput, Dispatch] {
+  function useStore(): State
+  function useStore<SelectorOutput>(selector: Selector<SelectorOutput>): SelectorOutput
+  function useStore<SelectorOutput>(selector?: Selector<SelectorOutput>): State | SelectorOutput {
     const store = useStoreContext()
 
     const state = useSyncExternalStore(
@@ -44,11 +38,30 @@ export function createPubSubContext<Store>(initialState: Store, name: string) {
       () => (selector ? selector(initialState) : initialState),
     )
 
-    return [state, store.set]
+    return state
+  }
+
+  function useStoreDispatch(): Dispatch
+  function useStoreDispatch<Key extends keyof State>(key: Key): Dispatch<State[Key]>
+  function useStoreDispatch<Key extends keyof State>(key?: Key): Dispatch | Dispatch<State[Key]> {
+    const store = useStoreContext()
+
+    const updateProperty = useCallback(
+      (payload: Payload<State[Key]>) => {
+        if (key) {
+          store.setProperty(key, payload)
+        }
+      },
+      [store, key],
+    )
+
+    return key ? updateProperty : store.set
   }
 
   return Object.freeze({
     Provider,
     useStore,
+    useStoreDispatch,
+    getState: store.get,
   })
 }
