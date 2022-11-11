@@ -1,4 +1,4 @@
-import { useHideSystemCursor } from '../cursor.hooks'
+import { useHideSystemCursor } from '../hooks'
 
 export function HideDefaultCursor() {
   useHideSystemCursor()

@@ -1,6 +1,10 @@
 import { CSSProperties } from 'react'
 
-export const defaultCursorStyles: CSSProperties = { position: 'absolute', pointerEvents: 'none' }
+export const defaultCursorStyles: CSSProperties = {
+  position: 'absolute',
+  pointerEvents: 'none',
+  overflow: 'hidden',
+}
 
 export type GlobalCursorStyle = {
   color: NonNullable<CSSProperties['color']>

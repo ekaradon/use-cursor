@@ -1,11 +1,9 @@
 import { createPubSubContext } from '@/utils/createPubSubContext'
-import { CSSProperties } from 'react'
-import { GlobalCursorStyle } from './style'
+import { GlobalCursorStyle, Style } from './style'
 
 export type Store = {
   globalCursorStyle: GlobalCursorStyle
-  styles: CSSProperties[]
-  transformations: CSSProperties['transform'][]
+  styles: Style[]
 }
 
 const initialState: Store = {
@@ -15,7 +13,6 @@ const initialState: Store = {
     width: '40px',
   },
   styles: [],
-  transformations: [],
 }
 
 const { Provider, useStore, useStoreDispatch, getState } = createPubSubContext<Store>(

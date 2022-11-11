@@ -1,25 +1,28 @@
 import { ReactNode } from 'react'
-import { Provider } from '../cursor.context'
-import { GlobalCursorStyle, Style } from '../style'
+import { Provider } from '../context'
+import { GlobalCursorStyle } from '../style'
 import { Cursor } from './Cursor'
+import { CursorGlobalStyle } from './CursorGlobalStyle'
 import { HideDefaultCursor } from './HideDefaultCursor'
+import { InitCursor } from './InitCursor'
 
-type CursorProviderProps = {
+interface CursorProviderProps extends Partial<GlobalCursorStyle> {
   children: ReactNode
   hideDefaultCursor?: boolean
-  initialStyle?: Style
-} & Partial<GlobalCursorStyle>
+}
 
 export function CursorProvider({
   children,
   hideDefaultCursor = true,
-  ...cursorStyle
+  ...props
 }: CursorProviderProps) {
   return (
     <Provider>
+      <InitCursor />
       {children}
       {hideDefaultCursor && <HideDefaultCursor />}
-      <Cursor {...cursorStyle} />
+      <CursorGlobalStyle {...props} />
+      <Cursor />
     </Provider>
   )
 }

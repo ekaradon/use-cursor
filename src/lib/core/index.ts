@@ -1,15 +1,11 @@
-import { CursorProvider } from './components/Provider'
-import { useCursorOnHover, useHideSystemCursor } from './cursor.hooks'
-import { Circle, Diamond, Ring, Square } from './shapes'
-
-const Cursor = {
-  Provider: CursorProvider,
-  Shapes: {
-    Ring,
-    Circle,
-    Square,
-    Diamond,
-  },
-}
-
-export { Cursor, useCursorOnHover, useHideSystemCursor }
+export { CursorProvider } from './components/Provider'
+export { Effects } from './effects'
+export type { Effect } from './effects'
+export {
+  useCursorStyleOnHover as useCursorOnHover,
+  useCursorStyle,
+  useGlobalCursorStyle,
+  useHideSystemCursor,
+} from './hooks'
+export { Shapes } from './shapes'
+export type { Style } from './style'
