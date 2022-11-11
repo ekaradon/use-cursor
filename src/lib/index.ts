@@ -24,4 +24,4 @@ export const Cursor = {
   Effects: buildComponentFromRecord(Effects),
 }
 
-export { useCursorOnHover, useCursorStyle, useHideSystemCursor } from './core'
+export { useCursorStyleOnHover, useCursorStyle, useHideSystemCursor } from './core'

@@ -1,10 +1,10 @@
-import { GlobalCursorStyle, Style } from './style'
+import { GlobalStyle, Style } from './style'
 
 const ShapeList = ['Circle', 'Diamond', 'Ring', 'Square'] as const
 
 export type Shape = typeof ShapeList[number]
 
-function Square({ width, height, color }: GlobalCursorStyle) {
+function Square({ width, height, color }: GlobalStyle) {
   return {
     border: `3px solid ${color}`,
     width,
@@ -12,7 +12,7 @@ function Square({ width, height, color }: GlobalCursorStyle) {
   }
 }
 
-function Ring(props: GlobalCursorStyle) {
+function Ring(props: GlobalStyle) {
   return {
     ...Square(props),
     borderRadius: '50%',

@@ -63,5 +63,10 @@ export function createPubSubContext<State>(initialState: State, name: string) {
     useStore,
     useStoreDispatch,
     getState: store.get,
+    subscribe(callback: (state: State) => void) {
+      return store.subscribe(() => {
+        callback(store.get())
+      })
+    },
   })
 }

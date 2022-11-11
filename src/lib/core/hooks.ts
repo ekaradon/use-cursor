@@ -5,22 +5,20 @@ import { CSSProperties, RefObject, useEffect, useRef } from 'react'
 import { useStore, useStoreDispatch } from './context'
 import { Effect, Effects } from './effects'
 import { Shape, Shapes } from './shapes'
-import { computeStyle, defaultCursorStyles, GlobalCursorStyle, Style } from './style'
+import { computeStyle, defaultCursorStyles, GlobalStyle, Style } from './style'
 
 export function useHideSystemCursor<T extends HTMLElement>(hoverTarget?: RefObject<T>) {
-  const root = useRef(document.body)
   const previousCursor = useRef(document.body.style.cursor)
-  const target = hoverTarget ?? root
 
   useHover(
-    target,
     () => (document.body.style.cursor = 'none'),
     () => (document.body.style.cursor = previousCursor.current),
+    hoverTarget,
   )
 }
 
-export function useGlobalCursorStyle(): GlobalCursorStyle {
-  return useStore((store) => store.globalCursorStyle)
+export function useGlobalStyle(): GlobalStyle {
+  return useStore((state) => state.globalStyle)
 }
 
 export function useCursorStyle(style: Style) {
@@ -40,9 +38,9 @@ export function useCursorStyle(style: Style) {
 
 export function useStyles() {
   const ref = useRef<HTMLDivElement>(null)
-  const globalCursorStyle = useStore((state) => state.globalCursorStyle)
+  const globalStyle = useStore((state) => state.globalStyle)
   const styles = useStore((state) => state.styles).map((style) =>
-    computeStyle({ style, globalCursorStyle }),
+    computeStyle({ style, globalStyle: globalStyle }),
   )
   const transform = styles
     .map(({ transform }) => transform)
@@ -70,22 +68,22 @@ function getNamespaceAndName(style: EffectStyles | ShapeStyles) {
 }
 
 type CursorStylePayload = Style | EffectStyles | ShapeStyles
-function useComputeStyleFromPayload() {
-  const globalCursorStyle = useStore((state) => state.globalCursorStyle)
+function useComputeStyleFromPayload<T extends HTMLElement>(target: RefObject<T>) {
+  const globalStyle = useStore((state) => state.globalStyle)
 
   return <T extends CursorStylePayload>(payload: T) => {
     if (typeof payload === 'string') {
       const [namespace, name] = getNamespaceAndName(payload)
       switch (namespace) {
         case 'Effect':
-          return computeStyle({ style: Effects[name], globalCursorStyle })
+          return computeStyle({ style: Effects[name], globalStyle, target })
         case 'Shape':
-          return computeStyle({ style: Shapes[name], globalCursorStyle })
+          return computeStyle({ style: Shapes[name], globalStyle, target })
         default:
           throw Error(`Invalid call to useCursorStyleOnHover(${payload})`)
       }
     }
-    return computeStyle({ style: payload, globalCursorStyle })
+    return computeStyle({ style: payload, globalStyle, target })
   }
 }
 
@@ -93,14 +91,14 @@ export function useCursorStyleOnHover<T extends HTMLElement>(
   ...payloads: [CursorStylePayload, ...CursorStylePayload[]]
 ) {
   const target = useRef<T>(null)
-  const style = Object.assign(...mapTuple(payloads, useComputeStyleFromPayload()))
+  const style = Object.assign(...mapTuple(payloads, useComputeStyleFromPayload(target)))
   const styleRef = useRef(style)
   const setStyles = useStoreDispatch('styles')
 
   useHover(
-    target,
     () => setStyles((styles) => [...styles, styleRef.current]),
     () => setStyles((styles) => styles.filter(isDifferent(styleRef.current))),
+    target,
   )
 
   return target

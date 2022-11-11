@@ -1,11 +1,14 @@
-import { RefObject } from 'react'
+import { RefObject, useRef } from 'react'
 import { useEventListener } from './useEventListener'
 
 export function useHover<T extends HTMLElement>(
-  target: RefObject<T>,
-  onEnter: () => void,
-  onExit: () => void,
+  onEnter: (event: MouseEvent) => void,
+  onExit: (event: MouseEvent) => void,
+  target?: RefObject<T>,
 ) {
-  useEventListener('mouseover', onEnter, target)
-  useEventListener('mouseout', onExit, target)
+  const root = useRef(document.body)
+  const hoverTarget = target ?? root
+
+  useEventListener('mouseover', onEnter, hoverTarget)
+  useEventListener('mouseout', onExit, hoverTarget)
 }

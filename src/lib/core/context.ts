@@ -1,23 +1,23 @@
 import { createPubSubContext } from '@/utils/createPubSubContext'
-import { GlobalCursorStyle, Style } from './style'
+import { GlobalStyle, Style } from './style'
 
 export type Store = {
-  globalCursorStyle: GlobalCursorStyle
   styles: Style[]
+  globalStyle: GlobalStyle
 }
 
 const initialState: Store = {
-  globalCursorStyle: {
+  styles: [],
+  globalStyle: {
     color: 'white',
     height: '40px',
     width: '40px',
   },
-  styles: [],
 }
 
-const { Provider, useStore, useStoreDispatch, getState } = createPubSubContext<Store>(
+const { Provider, useStore, useStoreDispatch, getState, subscribe } = createPubSubContext<Store>(
   initialState,
   'Cursor',
 )
 
-export { Provider, useStore, useStoreDispatch, getState }
+export { Provider, useStore, useStoreDispatch, getState, subscribe }
