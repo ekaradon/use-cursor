@@ -2,7 +2,7 @@ import { Maybe } from '@/utils/types'
 import { CSSProperties, RefObject } from 'react'
 
 export const defaultCursorStyles: CSSProperties = {
-  position: 'fixed',
+  position: 'absolute',
   pointerEvents: 'none',
 }
 

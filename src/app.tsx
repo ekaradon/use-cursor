@@ -1,3 +1,5 @@
+import { useGlobalStyle } from '@/core'
+import { setGlobalStyle } from '@/core/context'
 import 'reset-css'
 import './app.css'
 import DropOfWater from './assets/drop-of-water.jpg'
@@ -61,6 +63,37 @@ function Photo(props: JSX.IntrinsicElements['img']) {
   )
 }
 
+function ChangeGlobalStyle() {
+  const { color } = useGlobalStyle()
+
+  return (
+    <form>
+      <input
+        type="color"
+        value={color}
+        onChange={(e) => setGlobalStyle((prev) => ({ ...prev, color: e.target.value }))}
+      />
+
+      <fieldset>
+        <label>Width</label>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          onChange={(e) => setGlobalStyle((prev) => ({ ...prev, width: e.target.value + 'px' }))}
+        />
+        <label>Height</label>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          onChange={(e) => setGlobalStyle((prev) => ({ ...prev, height: e.target.value + 'px' }))}
+        />
+      </fieldset>
+    </form>
+  )
+}
+
 export function UseCursorOnHoverExamples() {
   return (
     <Cursor.Provider height="40px" width="40px">
@@ -76,6 +109,7 @@ export function UseCursorOnHoverExamples() {
             <Photo key={src} src={src} />
           ))}
         </div>
+        <ChangeGlobalStyle />
       </div>
     </Cursor.Provider>
   )

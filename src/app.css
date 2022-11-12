@@ -1,6 +1,7 @@
 body {
     background: #7A0F17;
     font-family: 'Dekko';
+    color: #ffffff;
 }
 
 .container {
@@ -20,7 +21,6 @@ body {
 }
 
 .title {
-    color: #ffffff;
     font-size: 150px;
     letter-spacing: 10px;
     position: relative;
@@ -44,11 +44,22 @@ body {
     max-width: 700px;
     font-size: 22px;
     line-height: 1.58;
-    color: #ffffff
 }
 
 .gallery {
     display: flex;
     flex-direction: row;
     gap: 2vw
+}
+
+form {
+    display: flex;
+    flex-direction: row;
+    gap: 1vw;
+    align-items: center;
+}
+
+form fieldset {
+    display: flex;
+    flex-direction: column;
 }

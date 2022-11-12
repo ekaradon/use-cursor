@@ -16,7 +16,10 @@ export function createPubSubStore<State>(initialState: State) {
       state = { ...state, ...(typeof payload === 'function' ? payload(state) : payload) }
       publish()
     },
-    setProperty<Key extends keyof State>(key: Key, payload: Payload<State[Key], State[Key]>) {
+    setProperty<Key extends keyof State, Property = State[Key]>(
+      key: Key,
+      payload: Payload<Property, Property>,
+    ) {
       state = { ...state, [key]: typeof payload === 'function' ? payload(state[key]) : payload }
       publish()
     },

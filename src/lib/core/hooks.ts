@@ -2,7 +2,7 @@ import { useEventListener } from '@/hooks/useEventListener'
 import { useHover } from '@/hooks/useHover'
 import { isDefined, isDifferent, mapTuple } from '@/utils/data'
 import { CSSProperties, RefObject, useEffect, useRef } from 'react'
-import { useStore, useStoreDispatch } from './context'
+import { setGlobalStyle, setRules, useStore, useStoreDispatch } from './context'
 import { Effect, Effects } from './effects'
 import { Shape, Shapes } from './shapes'
 import { computeStyle, defaultCursorStyles, GlobalStyle, Style } from './style'
@@ -17,13 +17,20 @@ export function useHideSystemCursor<T extends HTMLElement>(hoverTarget?: RefObje
   )
 }
 
-export function useGlobalStyle(): GlobalStyle {
+export function useGlobalStyle({ color, height, width }: Partial<GlobalStyle> = {}): GlobalStyle {
+  useEffect(() => {
+    const globalStyle: Partial<GlobalStyle> = Object.entries({ color, height, width })
+      .filter(([, value]) => isDefined(value))
+      .reduce((globalStyle, [key, value]) => ({ ...globalStyle, [key]: value }), {})
+
+    setGlobalStyle((prev) => ({ ...prev, globalStyle }))
+  }, [color, height, width])
+
   return useStore((state) => state.globalStyle)
 }
 
 export function useCursorStyle(style: Style) {
   const ruleRef = useRef({ style })
-  const setRules = useStoreDispatch('rules')
 
   useEffect(() => {
     const scopedRule = ruleRef.current
@@ -31,7 +38,7 @@ export function useCursorStyle(style: Style) {
     setRules((rules) => [...rules, scopedRule])
 
     return () => setRules((rules) => rules.filter(isDifferent(scopedRule)))
-  }, [setRules])
+  }, [])
 }
 
 export function useStyles() {
@@ -99,7 +106,6 @@ export function useCursorStyleOnHover<T extends HTMLElement>(
 ) {
   const target = useRef<T>(null)
   const newRulesRef = useRef(mapTuple(payloads, getStyleFromPayload<T>(target)))
-  const setRules = useStoreDispatch('rules')
 
   useHover(
     () => setRules((rules) => [...rules, ...newRulesRef.current]),

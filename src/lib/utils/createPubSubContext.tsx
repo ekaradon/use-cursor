@@ -8,6 +8,7 @@
 
 import { ReactNode, useCallback, useSyncExternalStore } from 'react'
 import { createStrictContext } from './createStrictContext'
+import { isDefined } from './data'
 import { createPubSubStore } from './pubSubStore'
 import { Maybe } from './types'
 
@@ -58,11 +59,26 @@ export function createPubSubContext<State>(initialState: State, name: string) {
     return key ? updateProperty : store.set
   }
 
+  function setState(state: Payload<Partial<State>>): void
+  function setState<Key extends keyof State>(key: Key, property: Payload<State[Key]>): void
+  function setState<Key extends keyof State>(
+    keyOrState: Key | Payload<Partial<State>>,
+    property?: Payload<State[Key]>,
+  ) {
+    if (typeof keyOrState === 'object') {
+      return store.set(keyOrState)
+    }
+    if (typeof keyOrState === 'string' && isDefined(property)) {
+      store.setProperty(keyOrState, property)
+    }
+  }
+
   return Object.freeze({
     Provider,
     useStore,
     useStoreDispatch,
     getState: store.get,
+    setState,
     subscribe(callback: (state: State) => void) {
       return store.subscribe(() => {
         callback(store.get())
