@@ -22,42 +22,48 @@ export function useGlobalStyle(): GlobalStyle {
 }
 
 export function useCursorStyle(style: Style) {
-  const styleRef = useRef(style)
-  const setStyles = useStoreDispatch('styles')
+  const ruleRef = useRef({ style })
+  const setRules = useStoreDispatch('rules')
 
   useEffect(() => {
-    const scopedStyle = styleRef.current
+    const scopedRule = ruleRef.current
 
-    setStyles((styles) => [...styles, scopedStyle])
+    setRules((rules) => [...rules, scopedRule])
 
-    return () => {
-      setStyles((styles) => styles.filter(isDifferent(scopedStyle)))
-    }
-  }, [setStyles])
+    return () => setRules((rules) => rules.filter(isDifferent(scopedRule)))
+  }, [setRules])
 }
 
 export function useStyles() {
-  const ref = useRef<HTMLDivElement>(null)
+  const setCursor = useStoreDispatch('cursor')
+  const cursor = useStore((state) => state.cursor)
   const globalStyle = useStore((state) => state.globalStyle)
-  const styles = useStore((state) => state.styles).map((style) =>
-    computeStyle({ style, globalStyle: globalStyle }),
+  const styles = useStore((state) => state.rules).map(({ style, context }) =>
+    computeStyle({
+      style,
+      globalStyle: globalStyle,
+      target: context?.target,
+      cursor,
+    }),
   )
+
   const transform = styles
     .map(({ transform }) => transform)
     .filter(isDefined)
     .join(' ')
+
   const style: CSSProperties = Object.assign({}, defaultCursorStyles, ...styles, {
     transform,
   })
 
   useEventListener('mousemove', (event) => {
-    if (ref.current) {
-      ref.current.style.top = event.pageY + 'px'
-      ref.current.style.left = event.pageX + 'px'
+    if (cursor) {
+      cursor.style.top = event.pageY + 'px'
+      cursor.style.left = event.pageX + 'px'
     }
   })
 
-  return { ref, style }
+  return { ref: setCursor, style }
 }
 
 type EffectStyles = `Effect.${Effect}`
@@ -68,22 +74,23 @@ function getNamespaceAndName(style: EffectStyles | ShapeStyles) {
 }
 
 type CursorStylePayload = Style | EffectStyles | ShapeStyles
-function useComputeStyleFromPayload<T extends HTMLElement>(target: RefObject<T>) {
-  const globalStyle = useStore((state) => state.globalStyle)
-
-  return <T extends CursorStylePayload>(payload: T) => {
-    if (typeof payload === 'string') {
-      const [namespace, name] = getNamespaceAndName(payload)
-      switch (namespace) {
-        case 'Effect':
-          return computeStyle({ style: Effects[name], globalStyle, target })
-        case 'Shape':
-          return computeStyle({ style: Shapes[name], globalStyle, target })
-        default:
-          throw Error(`Invalid call to useCursorStyleOnHover(${payload})`)
+function getStyleFromPayload<T extends HTMLElement>(target: RefObject<T>) {
+  return (payload: CursorStylePayload): { style: Style; context?: { target?: RefObject<T> } } => {
+    function getStyle(): Style {
+      if (typeof payload === 'string') {
+        const [namespace, name] = getNamespaceAndName(payload)
+        switch (namespace) {
+          case 'Effect':
+            return Effects[name]
+          case 'Shape':
+            return Shapes[name]
+          default:
+            throw Error(`Invalid call to useCursorStyleOnHover(${payload})`)
+        }
       }
+      return payload
     }
-    return computeStyle({ style: payload, globalStyle, target })
+    return { style: getStyle(), context: { target } }
   }
 }
 
@@ -91,13 +98,12 @@ export function useCursorStyleOnHover<T extends HTMLElement>(
   ...payloads: [CursorStylePayload, ...CursorStylePayload[]]
 ) {
   const target = useRef<T>(null)
-  const style = Object.assign(...mapTuple(payloads, useComputeStyleFromPayload(target)))
-  const styleRef = useRef(style)
-  const setStyles = useStoreDispatch('styles')
+  const newRulesRef = useRef(mapTuple(payloads, getStyleFromPayload<T>(target)))
+  const setRules = useStoreDispatch('rules')
 
   useHover(
-    () => setStyles((styles) => [...styles, styleRef.current]),
-    () => setStyles((styles) => styles.filter(isDifferent(styleRef.current))),
+    () => setRules((rules) => [...rules, ...newRulesRef.current]),
+    () => setRules((rules) => rules.filter((rule) => newRulesRef.current.every(isDifferent(rule)))),
     target,
   )
 

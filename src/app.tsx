@@ -1,16 +1,20 @@
 import 'reset-css'
 import './app.css'
 import DropOfWater from './assets/drop-of-water.jpg'
-import { Cursor, useCursorStyleOnHover, useCursorStyle } from './lib'
+import Feather from './assets/feather.jpg'
+import Fire from './assets/fire.jpg'
+import { Cursor, useCursorStyle, useCursorStyleOnHover } from './lib'
 
 function CustomCursor() {
   useCursorStyle({
-    transition: 'transform 0.3s ease-in-out',
+    transition: ['transform', 'border-radius', 'mix-blende-mode']
+      .map((transition) => `${transition} 0.3s ease-in-out`)
+      .join(', '),
   })
 
   return (
     <>
-      <Cursor.Shapes.Ring />
+      <Cursor.Shapes.Square />
       <Cursor.Effects.Glow />
     </>
   )
@@ -18,7 +22,7 @@ function CustomCursor() {
 
 function Title() {
   return (
-    <h1 className="title" ref={useCursorStyleOnHover('Effect.Grow')}>
+    <h1 className="title" ref={useCursorStyleOnHover('Shape.Circle', 'Effect.Difference')}>
       Hover me!
     </h1>
   )
@@ -26,10 +30,7 @@ function Title() {
 
 function Paragraph() {
   return (
-    <p
-      className="paragraph"
-      ref={useCursorStyleOnHover('Effect.Difference', 'Shape.Circle', 'Effect.Zoom')}
-    >
+    <p className="paragraph" ref={useCursorStyleOnHover('Effect.Glow', 'Shape.Diamond')}>
       Corpus callosum preserve and cherish that pale blue dot laws of physics two ghostly white
       figures in coveralls and helmets are softly dancing a still more glorious dawn awaits
       permanence of the stars. Citizens of distant epochs emerged into consciousness colonies dream
@@ -41,13 +42,40 @@ function Paragraph() {
   )
 }
 
+const gallery = [Feather, DropOfWater, Fire]
+
+function Photo(props: JSX.IntrinsicElements['img']) {
+  return (
+    <img
+      {...props}
+      alt="flower"
+      width={200}
+      height={350}
+      ref={useCursorStyleOnHover(
+        { transform: 'rotate(360deg)' },
+        'Shape.Ring',
+        'Effect.Zoom',
+        'Effect.Grow',
+      )}
+    />
+  )
+}
+
 export function UseCursorOnHoverExamples() {
   return (
-    <Cursor.Provider height="25px" width="25px">
+    <Cursor.Provider height="40px" width="40px">
       <CustomCursor />
-      <div className="container" style={{ backgroundImage: `url(${DropOfWater})` }}>
+
+      <div className="container">
         <Title />
+
         <Paragraph />
+
+        <div className="gallery">
+          {gallery.map((src) => (
+            <Photo key={src} src={src} />
+          ))}
+        </div>
       </div>
     </Cursor.Provider>
   )

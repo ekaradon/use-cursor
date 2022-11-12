@@ -1,4 +1,3 @@
-import { CSSProperties } from 'react'
 import { CursorProvider, Effects, Shapes, Style, useCursorStyle } from './core'
 
 type CursorComponent = () => null
@@ -9,7 +8,7 @@ function buildComponentFromRecord<T extends string>(
   return (Object.entries(record) as Array<[T, Style]>).reduce<Record<T, CursorComponent>>(
     (cursorComponents, [componentName, style]) => ({
       ...cursorComponents,
-      [componentName]: (props: CSSProperties) => {
+      [componentName]: () => {
         useCursorStyle(style)
         return null
       },

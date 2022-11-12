@@ -1,9 +1,9 @@
+import { Maybe } from '@/utils/types'
 import { CSSProperties, RefObject } from 'react'
 
 export const defaultCursorStyles: CSSProperties = {
-  position: 'absolute',
+  position: 'fixed',
   pointerEvents: 'none',
-  overflow: 'hidden',
 }
 
 export type GlobalStyle = {
@@ -13,6 +13,7 @@ export type GlobalStyle = {
 }
 
 interface StyleProps<T extends HTMLElement> extends GlobalStyle {
+  cursor?: Maybe<HTMLElement>
   target?: RefObject<T>
 }
 
@@ -24,12 +25,14 @@ type ComputeStyleProps<T extends HTMLElement> = {
   style?: Style<T>
   globalStyle: GlobalStyle
   target?: RefObject<T>
+  cursor?: Maybe<HTMLElement>
 }
 
 export function computeStyle<T extends HTMLElement>({
   style,
   globalStyle,
   target,
+  cursor,
 }: ComputeStyleProps<T>): CSSProperties {
   if (!style) {
     return {}
@@ -37,5 +40,5 @@ export function computeStyle<T extends HTMLElement>({
   if (typeof style === 'object') {
     return style
   }
-  return style({ ...globalStyle, target })
+  return style({ ...globalStyle, target, cursor })
 }
