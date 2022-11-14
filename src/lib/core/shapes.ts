@@ -1,6 +1,6 @@
 import { GlobalStyle, Style } from './style'
 
-const ShapeList = ['Circle', 'Diamond', 'Ring', 'Square'] as const
+const ShapeList = ['Diamond', 'Ring', 'Square'] as const
 
 export type Shape = typeof ShapeList[number]
 
@@ -20,10 +20,6 @@ function Ring(props: GlobalStyle) {
 }
 
 export const Shapes: Record<Shape, Style> = {
-  Circle: (props) => ({
-    ...Ring(props),
-    backgroundColor: props.color,
-  }),
   Diamond: (props) => ({
     ...Square(props),
     transform: 'rotate(45deg)',

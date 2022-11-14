@@ -24,7 +24,10 @@ function CustomCursor() {
 
 function Title() {
   return (
-    <h1 className="title" ref={useCursorStyleOnHover('Shape.Circle', 'Effect.Difference')}>
+    <h1
+      className="title"
+      ref={useCursorStyleOnHover('Shape.Ring', 'Effect.Fill', 'Effect.Difference')}
+    >
       Hover me!
     </h1>
   )
