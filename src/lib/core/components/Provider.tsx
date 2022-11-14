@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { Provider } from '../context'
+import { Provider } from '../store'
 import { GlobalStyle } from '../style'
 import { Cursor } from './Cursor'
 import { HideDefaultCursor } from './HideDefaultCursor'

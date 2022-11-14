@@ -1,11 +1,15 @@
-import { useGlobalStyle } from '@/core'
-import { setGlobalStyle } from '@/core/context'
 import 'reset-css'
 import './app.css'
 import DropOfWater from './assets/drop-of-water.jpg'
 import Feather from './assets/feather.jpg'
 import Fire from './assets/fire.jpg'
-import { Cursor, useCursorStyle, useCursorStyleOnHover } from './lib'
+import {
+  Cursor,
+  setGlobalStyle,
+  useCursorStyle,
+  useCursorStyleOnHover,
+  useGlobalStyle,
+} from './lib'
 
 function CustomCursor() {
   useCursorStyle({

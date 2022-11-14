@@ -1,5 +1,5 @@
 import { Maybe } from '@/utils/types'
-import { getState } from '../context'
+import { getState } from '../store'
 import { Style } from '../style'
 
 function getCursorPos(e: MouseEvent, target: HTMLElement) {
