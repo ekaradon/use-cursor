@@ -53,6 +53,7 @@ body {
 }
 
 form {
+    text-align: left;
     display: flex;
     flex-direction: row;
     gap: 1vw;
@@ -62,4 +63,15 @@ form {
 form fieldset {
     display: flex;
     flex-direction: column;
+    gap: 1vh
+}
+
+form input {
+    height: 25px;
+    min-height: 25px;
+}
+
+form input[type="checkbox"] {
+    align-self: flex-start;
+    transform: scale(1.5);
 }

@@ -1,8 +1,10 @@
+import { forwardRef, useId, useReducer } from 'react'
 import 'reset-css'
 import './app.css'
 import DropOfWater from './assets/drop-of-water.jpg'
 import Feather from './assets/feather.jpg'
 import Fire from './assets/fire.jpg'
+import ReactLogo from './assets/react.svg'
 import {
   Cursor,
   setGlobalStyle,
@@ -19,10 +21,10 @@ function CustomCursor() {
   })
 
   return (
-    <>
+    <div style={{ display: 'none' }}>
       <Cursor.Shapes.Square />
       <Cursor.Effects.Glow />
-    </>
+    </div>
   )
 }
 
@@ -43,23 +45,21 @@ function Paragraph() {
       Corpus callosum preserve and cherish that pale blue dot laws of physics two ghostly white
       figures in coveralls and helmets are softly dancing a still more glorious dawn awaits
       permanence of the stars. Citizens of distant epochs emerged into consciousness colonies dream
-      of the mind's eye citizens of distant epochs Sea of Tranquility? Great turbulent clouds cosmic
-      ocean cosmic ocean inconspicuous motes of rock and gas stirred by starlight invent the
-      universe and billions upon billions upon billions upon billions upon billions upon billions
-      upon billions.
+      of the mind's eye citizens of distant epochs Sea of Tranquility?
     </p>
   )
 }
 
 const gallery = [Feather, DropOfWater, Fire]
 
+const Image = forwardRef<HTMLImageElement, JSX.IntrinsicElements['img']>((props, ref) => {
+  return <img ref={ref} {...props} alt={props.src?.split('.')[0]} width={200} height={350} />
+})
+
 function Photo(props: JSX.IntrinsicElements['img']) {
   return (
-    <img
+    <Image
       {...props}
-      alt="flower"
-      width={200}
-      height={350}
       ref={useCursorStyleOnHover(
         { transform: 'rotate(360deg)' },
         'Shape.Ring',
@@ -70,17 +70,32 @@ function Photo(props: JSX.IntrinsicElements['img']) {
   )
 }
 
+function ChangeIconShape() {
+  return (
+    <div style={{ display: 'none' }}>
+      <Image src={ReactLogo} ref={useCursorStyle('Shape.Mask', 'Effect.Fill')} />
+    </div>
+  )
+}
+
 function ChangeGlobalStyle() {
+  const checkboxId = useId()
+  const [isActive, toggle] = useReducer((v) => !v, false)
   const { color } = useGlobalStyle()
 
   return (
     <form>
-      <input
-        type="color"
-        value={color}
-        onChange={(e) => setGlobalStyle((prev) => ({ ...prev, color: e.target.value }))}
-      />
-
+      <fieldset>
+        <label>color</label>
+        <input
+          type="color"
+          value={color}
+          onChange={(e) => setGlobalStyle((prev) => ({ ...prev, color: e.target.value }))}
+        />
+        <label htmlFor={checkboxId}>Change shape</label>
+        <input id={checkboxId} type="checkbox" checked={isActive} onChange={toggle} />
+        {isActive && <ChangeIconShape />}
+      </fieldset>
       <fieldset>
         <label>Width</label>
         <input

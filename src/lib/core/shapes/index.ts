@@ -1,6 +1,7 @@
-import { GlobalStyle, Style } from './style'
+import { GlobalStyle, Style } from '../style'
+import { Mask } from './Mask'
 
-const ShapeList = ['Diamond', 'Ring', 'Square'] as const
+const ShapeList = ['Diamond', 'Mask', 'Ring', 'Square'] as const
 
 export type Shape = typeof ShapeList[number]
 
@@ -25,5 +26,6 @@ export const Shapes: Record<Shape, Style> = {
     transform: 'rotate(45deg)',
   }),
   Ring,
+  Mask,
   Square,
 } as const

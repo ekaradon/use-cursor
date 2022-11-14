@@ -38,7 +38,7 @@ function moveMagnifier({ event, cursor, image, zoom = 2 }: moveMagnifierProps) {
 
 let controller: Maybe<AbortController>
 
-export const Zoom: Style<HTMLElement> = function Zoom({ target }) {
+export const Zoom: Style = function Zoom({ target }) {
   const image = target?.current
   const { cursor } = getState()
 
@@ -47,7 +47,7 @@ export const Zoom: Style<HTMLElement> = function Zoom({ target }) {
   }
 
   if (!(image instanceof HTMLImageElement)) {
-    throw Error('Zoom can only be used for an image')
+    throw Error('Zoom can only be used on an image.')
   }
 
   controller?.abort()
@@ -57,7 +57,7 @@ export const Zoom: Style<HTMLElement> = function Zoom({ target }) {
   })
 
   return {
-    backgroundImage: 'inherit',
+    backgroundImage: 'none',
     backgroundPosition: 'inherit',
     backgroundRepeat: 'inherit',
     backgroundSize: 'inherit',

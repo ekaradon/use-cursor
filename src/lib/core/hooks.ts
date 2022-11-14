@@ -29,18 +29,6 @@ export function useGlobalStyle({ color, height, width }: Partial<GlobalStyle> = 
   return useStore((state) => state.globalStyle)
 }
 
-export function useCursorStyle(style: Style) {
-  const ruleRef = useRef({ style })
-
-  useEffect(() => {
-    const scopedRule = ruleRef.current
-
-    setRules((rules) => [...rules, scopedRule])
-
-    return () => setRules((rules) => rules.filter(isDifferent(scopedRule)))
-  }, [])
-}
-
 export function useStyles() {
   const setCursor = useStoreDispatch('cursor')
   const cursor = useStore((state) => state.cursor)
@@ -99,6 +87,23 @@ function getStyleFromPayload<T extends HTMLElement>(target: RefObject<T>) {
     }
     return { style: getStyle(), context: { target } }
   }
+}
+
+export function useCursorStyle<T extends HTMLElement>(
+  ...payloads: [CursorStylePayload, ...CursorStylePayload[]]
+) {
+  const target = useRef<T>(null)
+  const newRulesRef = useRef(mapTuple(payloads, getStyleFromPayload<T>(target)))
+
+  useEffect(() => {
+    const scopedRules = newRulesRef.current
+
+    setRules((rules) => [...rules, ...scopedRules])
+
+    return () => setRules((rules) => rules.filter((rule) => scopedRules.every(isDifferent(rule))))
+  }, [])
+
+  return target
 }
 
 export function useCursorStyleOnHover<T extends HTMLElement>(
