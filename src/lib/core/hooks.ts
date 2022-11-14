@@ -3,9 +3,13 @@ import { useHover } from '@/hooks/useHover'
 import { isDefined, isDifferent, mapTuple } from '@/utils/data'
 import { CSSProperties, RefObject, useEffect, useRef } from 'react'
 import { setGlobalStyle, setRules, useStore, useStoreDispatch } from './store'
-import { Effect, Effects } from './effects'
-import { Shape, Shapes } from './shapes'
-import { computeStyle, defaultCursorStyles, GlobalStyle, Style } from './style'
+import {
+  computeStyle,
+  CursorStylePayload,
+  defaultCursorStyles,
+  getStyleFromPayload,
+  GlobalStyle,
+} from './style'
 
 export function useHideSystemCursor<T extends HTMLElement>(hoverTarget?: RefObject<T>) {
   const previousCursor = useRef(document.body.style.cursor)
@@ -59,34 +63,6 @@ export function useStyles() {
   })
 
   return { ref: setCursor, style }
-}
-
-type EffectStyles = `Effect.${Effect}`
-type ShapeStyles = `Shape.${Shape}`
-
-function getNamespaceAndName(style: EffectStyles | ShapeStyles) {
-  return style.split('.') as ['Effect', Effect] | ['Shape', Shape]
-}
-
-type CursorStylePayload = Style | EffectStyles | ShapeStyles
-function getStyleFromPayload<T extends HTMLElement>(target: RefObject<T>) {
-  return (payload: CursorStylePayload): { style: Style; context?: { target?: RefObject<T> } } => {
-    function getStyle(): Style {
-      if (typeof payload === 'string') {
-        const [namespace, name] = getNamespaceAndName(payload)
-        switch (namespace) {
-          case 'Effect':
-            return Effects[name]
-          case 'Shape':
-            return Shapes[name]
-          default:
-            throw Error(`Invalid call to useCursorStyleOnHover(${payload})`)
-        }
-      }
-      return payload
-    }
-    return { style: getStyle(), context: { target } }
-  }
 }
 
 export function useCursorStyle<T extends HTMLElement>(

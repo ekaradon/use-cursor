@@ -1,5 +1,7 @@
 import { Maybe } from '@/utils/types'
 import { CSSProperties, RefObject } from 'react'
+import { Effect, Effects } from './effects'
+import { Shape, Shapes } from './shapes'
 
 export const defaultCursorStyles: CSSProperties = {
   position: 'absolute',
@@ -41,4 +43,32 @@ export function computeStyle<T extends HTMLElement>({
     return style
   }
   return style({ ...globalStyle, target, cursor })
+}
+
+export type EffectStyles = `Effect.${Effect}`
+export type ShapeStyles = `Shape.${Shape}`
+export type CursorStylePayload = Style | EffectStyles | ShapeStyles
+
+function getNamespaceAndName(style: EffectStyles | ShapeStyles) {
+  return style.split('.') as ['Effect', Effect] | ['Shape', Shape]
+}
+
+export function getStyleFromPayload<T extends HTMLElement>(target?: RefObject<T>) {
+  return (payload: CursorStylePayload): { style: Style; context?: { target?: RefObject<T> } } => {
+    function getStyle(): Style {
+      if (typeof payload === 'string') {
+        const [namespace, name] = getNamespaceAndName(payload)
+        switch (namespace) {
+          case 'Effect':
+            return Effects[name]
+          case 'Shape':
+            return Shapes[name]
+          default:
+            throw Error(`Invalid call to useCursorStyleOnHover(${payload})`)
+        }
+      }
+      return payload
+    }
+    return { style: getStyle(), context: { target } }
+  }
 }
