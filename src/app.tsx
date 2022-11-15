@@ -73,7 +73,10 @@ function Photo(props: JSX.IntrinsicElements['img']) {
 function ChangeIconShape() {
   return (
     <div style={{ display: 'none' }}>
-      <Image src={ReactLogo} ref={useCursorStyle('Shape.Mask', 'Effect.Fill')} />
+      <Cursor.Effects.Fill />
+      <Cursor.Shapes.Mask>
+        <img src={ReactLogo} alt={ReactLogo} />
+      </Cursor.Shapes.Mask>
     </div>
   )
 }

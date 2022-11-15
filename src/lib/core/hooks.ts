@@ -68,7 +68,7 @@ export function useStyles() {
 export function useCursorStyle<T extends HTMLElement>(
   ...payloads: [CursorStylePayload, ...CursorStylePayload[]]
 ) {
-  const target = useRef<T>(null)
+  const target = useRef<T | null>(null)
   const newRulesRef = useRef(mapTuple(payloads, getStyleFromPayload<T>(target)))
 
   useEffect(() => {
