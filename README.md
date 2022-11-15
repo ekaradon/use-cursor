@@ -6,24 +6,21 @@
   - [Node/npm](#nodenpm)
   - [Deno](#deno)
 - [Basic usage](#basic-usage)
-- [API](#api)
-  - [CursorProvider](#cursorprovider)
-    - [Usage](#usage)
-    - [Returns](#returns)
-    - [Props](#props)
-  - [useCursorOnHover](#usecursoronhover)
-    - [Usage](#usage-1)
-    - [Returns](#returns-1)
-    - [Parameters](#parameters)
+- [Components](#components)
+  - [Cursor.Provider](#cursorprovider)
+  - [Cursor.Shapes](#cursorshapes)
+  - [Cursor.Effects](#cursoreffects)
+- [Hooks](#hooks)
+  - [useCursorStyle](#usecursorstyle)
+  - [useCursorStyleOnHover](#usecursorstyleonhover)
+  - [useGlobalStyle](#useglobalstyle)
   - [useHideSystemCursor](#usehidesystemcursor)
-    - [Usage](#usage-2)
-    - [Returns](#returns-2)
-    - [Parameters](#parameters-1)
 
 ## Introduction
 
+This library is all about customizing the cursor with easy.
 This is still a really early concept in alpha. Nothing is yet definitive and you should NOT use this in production for now.
-This library has no other dependencies than react itself, it's designed to do only one thing but to be straightforward and good at it.
+This library has no other dependencies than `react` itself and `polished`.
 
 ## Installation
 
@@ -52,45 +49,32 @@ Not yet supported.
 Overriding the default cursor by a new one:
 
 ```tsx
-import { CursorProvider, useCursorOnHover } from 'use-cursor-on-hover'
-
-const myCursorStyle: CSSProperties = {
-  width: '40px',
-  height: '40px',
-  border: '3px solid white',
-  borderRadius: '50%',
-  position: 'absolute',
-  boxShadow: '2px -3px 41px -1px rgba(250,250,250,0.64)',
-  transition: 'all .1s linear',
-}
+import { Cursor, useCursorStyleOnHover } from 'use-cursor-on-hover'
 
 function TitleHovered() {
-  return (
-    <h1
-      className="title"
-      ref={useCursorOnHover({
-        transform: 'scale(1.4)',
-        mixBlendMode: 'difference',
-        background: 'white',
-      })}
-    >
-      Hover me!
-    </h1>
-  )
+  return <h1 ref={useCursorStyleOnHover('Effect.Fill', 'Effect.Difference')}>Hover me!</h1>
 }
 
 function App() {
   return (
-    <CursorProvider initialStyle={myCursorStyle}>
+    <Cursor.Provider height="40px" width="40px" color="blue">
+      <Cursor.Shape.Ring />
+      <Cursor.Effect.Glow />
       <TitleHovered />
-    </CursorProvider>
+    </Cursor.Provider>
   )
 }
 ```
 
-## API
+Your cursor can be customized through a `Style` property which can have the following types:
 
-### CursorProvider
+- `string`: when already defined as a default by the library, see [Cursor.Shapes](#Cursor.Shapes) and [Cursor.Effects](#Cursor.Effects) for an exhaustive list
+- `CSSProperties`: when you want to manually customize the cursor
+- `(props) => CSSProperties`: when you want to customize the cursor depending of the context
+
+## Components
+
+### Cursor.Provider
 
 #### Usage
 
@@ -102,50 +86,167 @@ Should be called at the root level of your application.
 
 #### Props
 
-| Options             | Type          | Description                                                             |
-| ------------------- | ------------- | ----------------------------------------------------------------------- |
-| children            | ReactNode     | Everything that would benefit from the custom cursor should be there id |
-| initialStyle        | CSSProperties | An object defining the initial style of the cursor                      |
-| hideDefaultCursor   | boolean       | Define whether or not the default cursor should be hidden               |
+| Options           | Type                    | Description                                                             |
+| ----------------- | ----------------------- | ----------------------------------------------------------------------- |
+| children          | ReactNode               | Everything that would benefit from the custom cursor should be there id |
+| height            | CSSProperties['height'] | What's the expected height of your cursor                               |
+| width             | CSSProperties['width']  | What's the expected width of your cursor                                |
+| color             | CSSProperties['color']  | What's the color used when drawing your cursor                          |
+| hideDefaultCursor | boolean                 | Define whether or not the default cursor should be hidden               |
 
-### useCursorOnHover
+#### Example
+
+```tsx
+function CursorContainer(props: { children: ReactNode }) {
+  return (
+    <Cursor.Provider color="#91243E" height="25px" width="25px" hideDefaultCursor={false}>
+      {children}
+    </Cursor.Provider>
+  )
+}
+```
+
+### Cursor.Shapes
 
 #### Usage
 
-Should be called for every component where you want to define a custom style on the cursor.
+You can find a list of default shapes provided by this library when you want to define a custom cursor. You just need to call the component in order to set the shape accordingly. Once the component is unmounted, the shape is unset from your cursor.
+
+#### Available Shapes
+
+| Name    | requirements                           | Description                                      |
+| ------- | -------------------------------------- | ------------------------------------------------ |
+| Diamond | None                                   | Will set the shape of the cursor to ◇            |
+| Mask    | An `img` with an `svg` src as children | Will set the shape of the accordingly to the svg |
+| Ring    | None                                   | Will set the shape of the cursor to ○            |
+| Square  | None                                   | Will set the shape of the cursor to □            |
+
+#### Example
 
 ```tsx
-useCursorOnHover({ color: 'red' }, [...CSSProperties])
+function CustomCursor() {
+  return (
+    <>
+      <Cursor.Shape.Ring />
+      <Cursor.Shape.Mask>
+        <img src="myCustomShape.svg" alt="cursorShape" />
+      </Cursor.Shape.Mask>
+    </>
+  )
+}
 ```
-When two arguments override the same property, the latter takes precedence.
 
-#### Returns
+### Cursor.Effects
 
-`RefObject<T>` of the component on which you want to trigger the custom style of the cursor.
+#### Usage
 
-#### Parameters
+You can find a list of default effects provided by this library when you want to define a visual effect of your cursor unrelated to the shapes. You just need to call the component in order to set the effect accordingly. Once the component is unmounted, the effect is removed from your cursor.
 
-| Options    | Type          | Description                                                            |
-| ---------- | ------------- | ---------------------------------------------------------------------- |
-| ...style   | CSSProperties | The override of the cursor style when hovering this specific component |
+#### Available Effects
 
+| Name       | requirements         | Description                                                                      |
+| ---------- | -------------------- | -------------------------------------------------------------------------------- |
+| Difference | None                 | Will inverse the color hovered by your cursor, works well when `Fill` is used to |
+| Fill       | None                 | Will fill the interior of the cursor with the color defined globally             |
+| Glow       | None                 | Will make your cursor glow outside of its perimeter                              |
+| Grow       | None                 | Will enlarge your cursor                                                         |
+| Zoom       | An `img` as children | Will make your cursor zoom the image                                             |
+
+#### Example
+
+```tsx
+function CustomCursorEffects() {
+  return (
+    <>
+      <Cursor.Effects.Glow />
+      <Cursor.Effects.Grow />
+      <Cursor.Effects.Zoom>
+        <img src="avatar.png" alt="avatar" />
+      </Cursor.Effects.Zoom>
+    </>
+  )
+}
+```
+
+## Hooks
+
+### useCursorStyle
+
+#### Usage
+
+Should be called when you want to apply a style to your cursor globally once the component where this hooks is called is mounted. The style will be removed once the component is unmounted. This hook can take as many Style as you need. When two arguments override the same property, the latter takes precedence.
+
+#### Example
+
+```tsx
+function Example() {
+  useCursorStyle(
+    'Shapes.Ring',
+    'Effects.Glow',
+    ({ color }) => ({ outline: `1px solid ${color}` }),
+    { padding: '15px' },
+  )
+
+  return null
+}
+```
+
+### useCursorStyleOnHover
+
+#### Usage
+
+When you want to adapt your cursor when the user is specifically hovering an element. This hook can take as many Style as you need. When two arguments override the same property, the latter takes precedence.
+
+#### Example
+
+```tsx
+function ImageWithZoom(props: JSX.IntrinsicElements['img']) {
+  const imageRef = useCursorStyleOnHover(
+    'Shapes.Ring',
+    'Effects.Grow',
+    'Effects.Zoom',
+    ({ color }) => ({ outline: `1px solid ${color}` }),
+    { padding: '15px' },
+  )
+
+  return <img {...props} ref={imageRef} />
+}
+```
+
+### useGlobalStyle
+
+#### Usage
+
+When you want to get the global style for your cursor or when you want to modify them.
+
+#### Example
+
+```tsx
+function CustomCursor() {
+  const { width, height } = useGlobalStyle({ color: 'green' })
+
+  return <CustomCursorShape width={width} height={height} />
+}
+```
+
+#### Related
+
+Alternatively, if you just want to modify the global style in an event, you can just call `setGlobalStyle` after importing it from the library.
 
 ### useHideSystemCursor
 
 #### Usage
 
-When you don't want to hide the default cursor on your whole app, you can specify `hideDefaultCursor` as `false` in the Provider and then use this hook for the specific components you want to have the default cursor hidden.
+When you don't want to hide the default cursor globally but just on some part of your application, you can use this hook to deactivate the cursor.
+It can optionaly take a target which will then ensure the default cursor is hidden only when hovering the target.
+
+#### Example
 
 ```tsx
-useHideSystemCursor(targetRef)
+function ImageWithZoom(props: JSX.IntrinsicElements['img']) {
+  const imageRef = useCursorStyleOnHover('Effects.Zoom')
+  useHideSystemCursor(imageRef)
+
+  return <img {...props} ref={imageRef} />
+}
 ```
-
-#### Returns
-
-`void`, this hook returns nothing.
-
-#### Parameters
-
-| Options   | Type                   | Description                                                            |
-| --------- | ---------------------- | ---------------------------------------------------------------------- |
-| targetRef | RefObject<HTMLElement> | The override of the cursor style when hovering this specific component |

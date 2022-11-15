@@ -1,5 +1,5 @@
 // https://usehooks-ts.com/react-hook/use-event-listener
-import { RefObject, useEffect, useRef } from 'react'
+import { RefObject, useEffect, useLayoutEffect, useRef } from 'react'
 
 // MediaQueryList Event based useEventListener interface
 export function useEventListener<K extends keyof MediaQueryListEventMap>(
@@ -56,7 +56,7 @@ export function useEventListener<
     savedHandler.current = handler
   }, [handler])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Define the listening target
     const targetElement: T | Window = element?.current ?? window
 

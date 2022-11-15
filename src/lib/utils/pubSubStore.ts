@@ -1,27 +1,31 @@
-import { useCallback, useRef } from 'react'
+export function createPubSubStore<State>(initialState: State) {
+  type Payload<T, U = State> = T extends Function ? never : T | ((previousValue: U) => T)
 
-type Payload<Store> = Partial<Store> | ((previousValue: Store) => Partial<Store>)
-type Dispatch<Store> = (payload: Payload<Store>) => void
-type PubSubStore<Store> = {
-  get: () => Store
-  set: Dispatch<Store>
-  subscribe: (callback: () => void) => () => void
-}
+  const subscribers = new Set<() => void>()
+  let state: State = { ...initialState }
 
-export function usePubSubStore<Store>(initialState: Store): PubSubStore<Store> {
-  const store = useRef(initialState)
-  const subscribers = useRef(new Set<() => void>())
+  function publish() {
+    subscribers.forEach((callback) => callback())
+  }
 
   return Object.freeze({
-    get: useCallback(() => store.current, []),
-    set: useCallback((payload: Payload<Store>) => {
-      const value: Partial<Store> = typeof payload === 'function' ? payload(store.current) : payload
-      store.current = { ...store.current, ...value }
-      subscribers.current.forEach((callback) => callback())
-    }, []),
-    subscribe: useCallback((callback: () => void) => {
-      subscribers.current.add(callback)
-      return () => subscribers.current.delete(callback)
-    }, []),
+    get() {
+      return state
+    },
+    set(payload: Payload<Partial<State>>) {
+      state = { ...state, ...(typeof payload === 'function' ? payload(state) : payload) }
+      publish()
+    },
+    setProperty<Key extends keyof State, Property = State[Key]>(
+      key: Key,
+      payload: Payload<Property, Property>,
+    ) {
+      state = { ...state, [key]: typeof payload === 'function' ? payload(state[key]) : payload }
+      publish()
+    },
+    subscribe(callback: () => void) {
+      subscribers.add(callback)
+      return () => subscribers.delete(callback)
+    },
   })
 }
