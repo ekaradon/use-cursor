@@ -1,6 +1,6 @@
 {
-  "name": "use-cursor",
-  "repository": "https://github.com/ekaradon/use-cursor.git",
+  "name": "use-custom-cursor",
+  "repository": "https://github.com/ekaradon/use-custom-cursor.git",
   "private": false,
   "version": "0.1.0",
   "type": "module",
@@ -30,16 +30,16 @@
     "react": "18.x",
     "react-dom": "18.x"
   },
-  "main": "./dist/use-cursor-on-hover.umd.js",
-  "types": "./dist/use-cursor-on-hover.es.d.ts",
+  "main": "./dist/use-custom-cursor.umd.js",
+  "types": "./dist/use-custom-cursor.es.d.ts",
   "files": [
     "dist"
   ],
-  "module": "./dist/use-cursor-on-hover.es.js",
+  "module": "./dist/use-custom-cursor.es.js",
   "exports": {
     ".": {
-      "import": "./dist/use-cursor-on-hover.es.js",
-      "require": "./dist/use-cursor-on-hover.umd.js"
+      "import": "./dist/use-custom-cursor.es.js",
+      "require": "./dist/use-custom-cursor.umd.js"
     }
   },
   "eslintConfig": {

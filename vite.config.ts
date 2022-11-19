@@ -15,9 +15,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src', 'lib', 'index.ts'),
-      name: 'use-cursor',
+      name: 'use-custom-cursor',
       formats: ['es', 'umd'],
-      fileName: (format) => `use-cursor.${format}.js`,
+      fileName: (format) => `use-custom-cursor.${format}.js`,
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
