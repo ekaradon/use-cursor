@@ -1,4 +1,4 @@
-# use-cursor-on-hover
+# use-cursor
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -32,12 +32,12 @@ This library is written with Typescript in mind, but you can use it with Javascr
 
 ### Node/npm
 
-To install `use-cursor-on-hover`:
+To install `use-cursor`:
 
 ```sh
-npm install use-cursor-on-hover@alpha   # npm
-yarn add use-cursor-on-hover@alpha      # yarn
-pnpm add use-cursor-on-hover@alpha      # pnpm
+npm install use-cursor@alpha   # npm
+yarn add use-cursor@alpha      # yarn
+pnpm add use-cursor@alpha      # pnpm
 ```
 
 ### Deno
@@ -49,7 +49,7 @@ Not yet supported.
 Overriding the default cursor by a new one:
 
 ```tsx
-import { Cursor, useCursorStyleOnHover } from 'use-cursor-on-hover'
+import { Cursor, useCursorStyleOnHover } from 'use-cursor'
 
 function TitleHovered() {
   return <h1 ref={useCursorStyleOnHover('Effect.Fill', 'Effect.Difference')}>Hover me!</h1>

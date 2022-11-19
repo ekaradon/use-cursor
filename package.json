@@ -1,5 +1,6 @@
 {
-  "name": "use-cursor-on-hover",
+  "name": "use-cursor",
+  "repository": "https://github.com/ekaradon/use-cursor.git",
   "private": false,
   "version": "0.1.0",
   "type": "module",
