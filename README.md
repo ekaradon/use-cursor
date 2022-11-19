@@ -1,4 +1,13 @@
-# use-custom-cursor
+<h1 align="center" style="border-bottom: none;">⎋ use-custom-cursor</h1>
+
+<p align="center">
+  <a href="https://bundlephobia.com/package/use-custom-cursor@latest" target="\_parent">
+    <img alt="" src="https://badgen.net/bundlephobia/minzip/use-custom-cursor" />
+  </a>
+  <a href="https://www.npmjs.com/package/use-custom-cursor">
+    <img alt="npm latest version" src="https://img.shields.io/npm/v/use-custom-cursor/latest.svg">
+  </a>
+</p>
 
 - [Introduction](#introduction)
 - [Installation](#installation)
