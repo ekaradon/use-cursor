@@ -1,6 +1,8 @@
 {
   "name": "use-custom-cursor",
   "repository": "https://github.com/ekaradon/use-custom-cursor.git",
+  "homepage": "https://github.com/ekaradon/use-custom-cursor#readme",
+  "author": "Ekaradon  <ekaradon+git@pm.me> (https://ekaradon.github.io)",
   "private": false,
   "version": "0.1.1",
   "type": "module",
