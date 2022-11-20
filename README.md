@@ -1,4 +1,13 @@
-# use-cursor-on-hover
+<h1 align="center" style="border-bottom: none;">⎋ use-custom-cursor</h1>
+
+<p align="center">
+  <a href="https://bundlephobia.com/package/use-custom-cursor@latest" target="\_parent">
+    <img alt="" src="https://badgen.net/bundlephobia/minzip/use-custom-cursor" />
+  </a>
+  <a href="https://www.npmjs.com/package/use-custom-cursor">
+    <img alt="npm latest version" src="https://img.shields.io/npm/v/use-custom-cursor/latest.svg">
+  </a>
+</p>
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -18,9 +27,9 @@
 
 ## Introduction
 
-This library is all about customizing the cursor with easy.
-This is still a really early concept in alpha. Nothing is yet definitive and you should NOT use this in production for now.
+This library is all about customizing the cursor with ease.
 This library has no other dependencies than `react` itself and `polished`.
+See the [demo](https://ekaradon.github.io/use-custom-cursor/).
 
 ## Installation
 
@@ -32,12 +41,12 @@ This library is written with Typescript in mind, but you can use it with Javascr
 
 ### Node/npm
 
-To install `use-cursor-on-hover`:
+To install `use-custom-cursor`:
 
 ```sh
-npm install use-cursor-on-hover@alpha   # npm
-yarn add use-cursor-on-hover@alpha      # yarn
-pnpm add use-cursor-on-hover@alpha      # pnpm
+npm install use-custom-cursor@alpha   # npm
+yarn add use-custom-cursor@alpha      # yarn
+pnpm add use-custom-cursor@alpha      # pnpm
 ```
 
 ### Deno
@@ -49,7 +58,7 @@ Not yet supported.
 Overriding the default cursor by a new one:
 
 ```tsx
-import { Cursor, useCursorStyleOnHover } from 'use-cursor-on-hover'
+import { Cursor, useCursorStyleOnHover } from 'use-custom-cursor'
 
 function TitleHovered() {
   return <h1 ref={useCursorStyleOnHover('Effect.Fill', 'Effect.Difference')}>Hover me!</h1>

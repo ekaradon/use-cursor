@@ -1,12 +1,17 @@
 {
-  "name": "use-cursor-on-hover",
+  "name": "use-custom-cursor",
+  "repository": "https://github.com/ekaradon/use-custom-cursor.git",
+  "homepage": "https://github.com/ekaradon/use-custom-cursor#readme",
+  "author": "Ekaradon  <ekaradon+git@pm.me> (https://ekaradon.github.io)",
   "private": false,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build:demo": "tsc && vite build --config vite.config.demo.ts",
+    "preview": "vite preview",
+    "preview:demo": "vite preview --config vite.config.demo.ts"
   },
   "dependencies": {
     "polished": "^4.2.2"
@@ -20,6 +25,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "reset-css": "^5.0.1",
+    "rollup-plugin-visualizer": "^5.8.3",
     "typescript": "^4.6.4",
     "vite": "^3.2.0",
     "vite-plugin-dts": "^1.6.6",
@@ -29,16 +35,16 @@
     "react": "18.x",
     "react-dom": "18.x"
   },
-  "main": "./dist/use-cursor-on-hover.umd.js",
-  "types": "./dist/use-cursor-on-hover.es.d.ts",
+  "main": "./dist/use-custom-cursor.umd.js",
+  "types": "./dist/use-custom-cursor.es.d.ts",
   "files": [
     "dist"
   ],
-  "module": "./dist/use-cursor-on-hover.es.js",
+  "module": "./dist/use-custom-cursor.es.js",
   "exports": {
     ".": {
-      "import": "./dist/use-cursor-on-hover.es.js",
-      "require": "./dist/use-cursor-on-hover.umd.js"
+      "import": "./dist/use-custom-cursor.es.js",
+      "require": "./dist/use-custom-cursor.umd.js"
     }
   },
   "eslintConfig": {
