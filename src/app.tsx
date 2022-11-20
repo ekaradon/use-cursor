@@ -1,10 +1,14 @@
-import { forwardRef, useId, useReducer } from 'react'
+import { forwardRef, useState } from 'react'
 import 'reset-css'
 import './app.css'
 import DropOfWater from './assets/drop-of-water.jpg'
+import Square from './assets/square.svg'
+import ElementAir from './assets/element-air.svg'
+import ElementEarth from './assets/element-earth.svg'
+import ElementFire from './assets/element-fire.svg'
+import ElementWater from './assets/element-water.svg'
 import Feather from './assets/feather.jpg'
 import Fire from './assets/fire.jpg'
-import ReactLogo from './assets/react.svg'
 import {
   Cursor,
   setGlobalStyle,
@@ -70,34 +74,53 @@ function Photo(props: JSX.IntrinsicElements['img']) {
   )
 }
 
-function ChangeIconShape() {
+function ButtonChangeShape(props: { shape: string; setShape: (shape: string) => void }) {
+  return (
+    <button type="button" onClick={() => props.setShape(props.shape)}>
+      <img
+        height="100%"
+        width="100%"
+        src={props.shape}
+        alt={props.shape}
+        ref={useCursorStyleOnHover('Shape.Mask', 'Effect.Fill')}
+      />
+    </button>
+  )
+}
+
+function SetCustomShape(props: { shape: string }) {
   return (
     <div style={{ display: 'none' }}>
-      <Cursor.Effects.Fill />
       <Cursor.Shapes.Mask>
-        <img src={ReactLogo} alt={ReactLogo} />
+        <img height="100%" width="100%" src={props.shape} alt={props.shape} />
       </Cursor.Shapes.Mask>
+      <Cursor.Effects.Fill />
     </div>
   )
 }
 
 function ChangeGlobalStyle() {
-  const checkboxId = useId()
-  const [isActive, toggle] = useReducer((v) => !v, false)
+  const [shape, setShape] = useState(Square)
   const { color } = useGlobalStyle()
 
   return (
     <form>
       <fieldset>
-        <label>color</label>
+        <label>Color</label>
         <input
           type="color"
           value={color}
           onChange={(e) => setGlobalStyle((prev) => ({ ...prev, color: e.target.value }))}
         />
-        <label htmlFor={checkboxId}>Change shape</label>
-        <input id={checkboxId} type="checkbox" checked={isActive} onChange={toggle} />
-        {isActive && <ChangeIconShape />}
+        <label>Shapes</label>
+        <div>
+          <ButtonChangeShape shape={Square} setShape={setShape} />
+          <ButtonChangeShape shape={ElementAir} setShape={setShape} />
+          <ButtonChangeShape shape={ElementEarth} setShape={setShape} />
+          <ButtonChangeShape shape={ElementFire} setShape={setShape} />
+          <ButtonChangeShape shape={ElementWater} setShape={setShape} />
+          {shape !== Square && <SetCustomShape shape={shape} />}
+        </div>
       </fieldset>
       <fieldset>
         <label>Width</label>

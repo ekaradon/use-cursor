@@ -57,7 +57,6 @@ form {
     display: flex;
     flex-direction: row;
     gap: 1vw;
-    align-items: center;
 }
 
 form fieldset {
@@ -74,4 +73,14 @@ form input {
 form input[type="checkbox"] {
     align-self: flex-start;
     transform: scale(1.5);
+}
+
+form button[type="button"] {
+    width: 50px;
+    background-color: transparent;
+    border: none;
+}
+
+form button[type="button"]:hover {
+    cursor: none;
 }
