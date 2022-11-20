@@ -27,9 +27,9 @@
 
 ## Introduction
 
-This library is all about customizing the cursor with easy.
-This is still a really early concept in alpha. Nothing is yet definitive and you should NOT use this in production for now.
+This library is all about customizing the cursor with ease.
 This library has no other dependencies than `react` itself and `polished`.
+See the [demo](https://ekaradon.github.io/use-custom-cursor/).
 
 ## Installation
 
