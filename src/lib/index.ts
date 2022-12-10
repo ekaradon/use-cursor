@@ -1,7 +1,16 @@
 import { Children, cloneElement, isValidElement, ReactElement, ReactNode } from 'react'
-import { CursorProvider, Effects, Shapes, Style, useCursorStyle } from './core'
+import {
+  CursorProvider,
+  Effects,
+  Shapes,
+  Style,
+  useCursorStyle,
+  useCursorStyleOnHover,
+} from './core'
 
-type CursorComponent = (props: { children?: ReactElement }) => ReactElement
+type CursorComponent = (props: { children?: ReactElement; on: 'hover' | 'mount' }) => ReactElement
+type UseStyle = typeof useCursorStyle | typeof useCursorStyleOnHover
+type CursorComponentProps = { children?: ReactNode; on: 'hover' | 'mount'; useStyle?: UseStyle }
 
 function buildComponentFromRecord<T extends string>(
   record: Record<T, Style>,
@@ -9,8 +18,12 @@ function buildComponentFromRecord<T extends string>(
   return (Object.entries(record) as Array<[T, Style]>).reduce<Record<T, CursorComponent>>(
     (cursorComponents, [componentName, style]) => ({
       ...cursorComponents,
-      [componentName]: ({ children }: { children: ReactNode }) => {
-        const childRef = useCursorStyle(style)
+      [componentName]: ({
+        children,
+        on,
+        useStyle = on === 'hover' ? useCursorStyleOnHover : useCursorStyle,
+      }: CursorComponentProps) => {
+        const childRef = useStyle(style)
 
         if (isValidElement(children)) {
           const child = Children.only(children)
