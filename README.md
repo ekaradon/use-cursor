@@ -4,6 +4,7 @@
   <a href="https://bundlephobia.com/package/use-custom-cursor@latest" target="\_parent">
     <img alt="" src="https://badgen.net/bundlephobia/minzip/use-custom-cursor" />
   </a>
+  <img alt="license" src="https://img.shields.io/npm/l/use-custom-cursor" />
   <a href="https://www.npmjs.com/package/use-custom-cursor">
     <img alt="npm latest version" src="https://img.shields.io/npm/v/use-custom-cursor/latest.svg">
   </a>
