@@ -62,15 +62,9 @@ const Image = forwardRef<HTMLImageElement, JSX.IntrinsicElements['img']>((props,
 
 function Photo(props: JSX.IntrinsicElements['img']) {
   return (
-    <Image
-      {...props}
-      ref={useCursorStyleOnHover(
-        { transform: 'rotate(360deg)' },
-        'Shape.Ring',
-        'Effect.Zoom',
-        'Effect.Grow',
-      )}
-    />
+    <Cursor.Effects.Zoom>
+      <Image {...props} ref={useCursorStyleOnHover('Shape.Ring', 'Effect.Grow')} />
+    </Cursor.Effects.Zoom>
   )
 }
 
@@ -146,7 +140,6 @@ export function UseCursorOnHoverExamples() {
   return (
     <Cursor.Provider height="40px" width="40px">
       <CustomCursor />
-
       <div className="container">
         <Title />
 
@@ -158,6 +151,20 @@ export function UseCursorOnHoverExamples() {
           ))}
         </div>
         <ChangeGlobalStyle />
+        <div className="footer">
+          <h3>Use Custom Cursor</h3>
+          <a
+            href="https://github.com/ekaradon/use-custom-cursor"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              alt="GitHub Repo stars"
+              src="https://img.shields.io/github/stars/ekaradon/use-custom-cursor?style=social"
+              style={{ stroke: 'white', color: 'white', fill: 'white' }}
+            />
+          </a>
+        </div>
       </div>
     </Cursor.Provider>
   )
