@@ -3,7 +3,7 @@ import { CursorProvider, Presets } from './core'
 export const Cursor = {
   Provider: CursorProvider,
   ...Presets,
-}
+} as const
 
 export {
   setGlobalStyle,

@@ -5,8 +5,16 @@ import { useCursorStyle, useCursorStyleOnHover } from './hooks'
 import { Shapes } from './shapes'
 import { Style } from './style'
 
-type CursorComponent = (props: { children?: ReactElement; on: 'hover' | 'mount' }) => ReactElement
-type CursorComponentProps = { children?: ReactNode; on: 'hover' | 'mount' }
+const hoverOnlyComponents = [Effects.Zoom] as const
+
+type HoverOnlyComponents = typeof hoverOnlyComponents[number]
+type ComponentProps<T extends string> = T extends 'hover'
+  ? { on: T; children: ReactElement }
+  : { on: T; children?: ReactElement }
+type Component<T> = (
+  props: ComponentProps<T extends HoverOnlyComponents ? 'hover' : 'hover' | 'mount'>,
+) => ReactElement
+type Presets<T> = { [K in keyof T]: Component<T[K]> }
 
 const Clone = forwardRef(function CursorComponent({ children }: { children: ReactNode }, ref: any) {
   if (isValidElement(children)) {
@@ -24,25 +32,24 @@ function OnHover({ style, children }: { style: Style; children: ReactNode }) {
   return <Clone ref={useCursorStyleOnHover(style)}>{children}</Clone>
 }
 
-function buildComponentFromRecord<T extends string>(
-  record: Record<T, Style>,
-): Record<T, CursorComponent> {
-  return (Object.entries(record) as Array<[T, Style]>).reduce<Record<T, CursorComponent>>(
-    (cursorComponents, [componentName, style]) => ({
-      ...cursorComponents,
-      [componentName]: ({ children, on }: CursorComponentProps) => {
-        return on === 'mount' ? (
-          <OnMount style={style}>{children}</OnMount>
+function buildComponentFromRecord<T extends Record<string, Style>>(data: T): Presets<T> {
+  return Object.entries(data).reduce<Partial<Presets<T>>>(
+    (presets, [presetName, preset]) => ({
+      ...presets,
+      [presetName]: ({ children, on }) =>
+        on === 'mount' ? (
+          <OnMount style={preset}>{children}</OnMount>
         ) : (
-          <OnHover style={style}>{children}</OnHover>
-        )
-      },
+          <OnHover style={preset}>{children}</OnHover>
+        ),
     }),
-    {} as Record<T, CursorComponent>,
-  )
+    {},
+  ) as Presets<T>
 }
 
-export const Presets = {
+const AllPresets = {
   Shapes: buildComponentFromRecord(Shapes),
   Effects: buildComponentFromRecord(Effects),
-}
+} as const
+
+export { AllPresets as Presets }
