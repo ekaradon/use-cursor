@@ -62,9 +62,11 @@ const Image = forwardRef<HTMLImageElement, JSX.IntrinsicElements['img']>((props,
 
 function Photo(props: JSX.IntrinsicElements['img']) {
   return (
-    <Cursor.Effects.Zoom on="hover">
-      <Image {...props} ref={useCursorStyleOnHover('Shape.Ring', 'Effect.Grow')} />
-    </Cursor.Effects.Zoom>
+    <Cursor.Effects.Grow on="hover">
+      <Cursor.Effects.Zoom on="hover">
+        <Image {...props} ref={useCursorStyleOnHover('Shape.Ring')} />
+      </Cursor.Effects.Zoom>
+    </Cursor.Effects.Grow>
   )
 }
 

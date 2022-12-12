@@ -24,24 +24,35 @@ const Clone = forwardRef(function CursorComponent({ children }: { children: Reac
   return null
 })
 
-function OnMount({ style, children }: { style: Style; children: ReactNode }) {
-  return <Clone ref={useCursorStyle(style)}>{children}</Clone>
-}
+const OnMount = forwardRef(function OnMount(
+  { style, children }: { style: Style; children: ReactNode },
+  ref: any,
+) {
+  return <Clone ref={mergeRefs([ref, useCursorStyle(style)])}>{children}</Clone>
+})
 
-function OnHover({ style, children }: { style: Style; children: ReactNode }) {
-  return <Clone ref={useCursorStyleOnHover(style)}>{children}</Clone>
-}
+const OnHover = forwardRef(function OnHover(
+  { style, children }: { style: Style; children: ReactNode },
+  ref: any,
+) {
+  return <Clone ref={mergeRefs([ref, useCursorStyleOnHover(style)])}>{children}</Clone>
+})
 
 function buildComponentFromRecord<T extends Record<string, Style>>(data: T): Presets<T> {
   return Object.entries(data).reduce<Partial<Presets<T>>>(
     (presets, [presetName, preset]) => ({
       ...presets,
-      [presetName]: ({ children, on }) =>
+      [presetName]: forwardRef(({ children, on }, ref) =>
         on === 'mount' ? (
-          <OnMount style={preset}>{children}</OnMount>
+          <OnMount ref={ref} style={preset}>
+            {children}
+          </OnMount>
         ) : (
-          <OnHover style={preset}>{children}</OnHover>
+          <OnHover ref={ref} style={preset}>
+            {children}
+          </OnHover>
         ),
+      ),
     }),
     {},
   ) as Presets<T>
