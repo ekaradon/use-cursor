@@ -1,5 +1,14 @@
 import { mergeRefs } from '@/utils/ref'
-import { Children, cloneElement, forwardRef, isValidElement, ReactElement, ReactNode } from 'react'
+import { StrictObject } from '@/utils/strictObject'
+import {
+  Children,
+  cloneElement,
+  ExoticComponent,
+  forwardRef,
+  isValidElement,
+  ReactElement,
+  ReactNode,
+} from 'react'
 import { Effects } from './effects'
 import { useCursorStyle, useCursorStyleOnHover } from './hooks'
 import { Shapes } from './shapes'
@@ -24,35 +33,35 @@ const Clone = forwardRef(function CursorComponent({ children }: { children: Reac
   return null
 })
 
-const OnMount = forwardRef(function OnMount(
-  { style, children }: { style: Style; children: ReactNode },
-  ref: any,
-) {
-  return <Clone ref={mergeRefs([ref, useCursorStyle(style)])}>{children}</Clone>
-})
+const OnMount = forwardRef(
+  ({ style, children }: { style: Style; children: ReactNode }, ref: any) => (
+    <Clone ref={mergeRefs([ref, useCursorStyle(style)])}>{children}</Clone>
+  ),
+)
 
-const OnHover = forwardRef(function OnHover(
-  { style, children }: { style: Style; children: ReactNode },
-  ref: any,
-) {
-  return <Clone ref={mergeRefs([ref, useCursorStyleOnHover(style)])}>{children}</Clone>
-})
+const OnHover = forwardRef(
+  ({ style, children }: { style: Style; children: ReactNode }, ref: any) => (
+    <Clone ref={mergeRefs([ref, useCursorStyleOnHover(style)])}>{children}</Clone>
+  ),
+)
+
+function buildComponent(style: Style) {
+  return forwardRef<ExoticComponent, ComponentProps<string>>(({ on, children }, ref) => {
+    const Component = on === 'hover' ? OnHover : OnMount
+
+    return (
+      <Component ref={ref} style={style}>
+        {children}
+      </Component>
+    )
+  })
+}
 
 function buildComponentFromRecord<T extends Record<string, Style>>(data: T): Presets<T> {
-  return Object.entries(data).reduce<Partial<Presets<T>>>(
+  return StrictObject.entries(data).reduce<Partial<Presets<T>>>(
     (presets, [presetName, preset]) => ({
       ...presets,
-      [presetName]: forwardRef(({ children, on }, ref) =>
-        on === 'mount' ? (
-          <OnMount ref={ref} style={preset}>
-            {children}
-          </OnMount>
-        ) : (
-          <OnHover ref={ref} style={preset}>
-            {children}
-          </OnHover>
-        ),
-      ),
+      [presetName]: buildComponent(preset),
     }),
     {},
   ) as Presets<T>
