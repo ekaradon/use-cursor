@@ -26,6 +26,8 @@
   - [useGlobalStyle](#useglobalstyle)
   - [useHideSystemCursor](#usehidesystemcursor)
 
+/!\ DO NOT USE. NOT MAINTAINED, NOR STABLE.
+
 ## Introduction
 
 This library is all about customizing the cursor with ease.
